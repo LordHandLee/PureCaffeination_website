@@ -26,13 +26,13 @@ SECRET_KEY = 'django-insecure-n)v%7%9cvf(_jr7vsgts8g9w#y&!y3efj)rhif1y-ybm&kzh4m
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['purecaffeination.com', '*']
+ALLOWED_HOSTS = ['purecaffeination.com', 'purecaffeination.onrender.com',]
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
+    'django.contrib.admin', 
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
