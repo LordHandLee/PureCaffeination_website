@@ -1,0 +1,34 @@
+{% comment %} base.html - Shared layout with theme switching support {% endcomment %}
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pure Caffeination</title>
+    
+    <link href="{% static 'css/dist/styles.css' %}" rel="stylesheet">
+    {% tailwind_css %}
+
+</head>
+<body class="bg-{{ theme }}-bg text-{{ theme }}-text font-{{ theme }}">
+
+    <header class="bg-{{ theme }}-accent p-4 flex justify-between items-center">
+        <h1 class="text-3xl font-bold text-{{ theme }}-secondary">Pure Caffeination</h1>
+        <nav>
+            <a href="/" class="mx-2 hover:underline">Home</a>
+            <a href="/shop" class="mx-2 hover:underline">Shop</a>
+            <a href="/faq" class="mx-2 hover:underline">FAQ</a>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-{{ theme }}-accent p-4 text-center text-sm text-{{ theme }}-secondary">
+        &copy; {{ now.year }} Pure Caffeination. All fart rights reserved.
+    </footer>
+
+</body>
+</html>

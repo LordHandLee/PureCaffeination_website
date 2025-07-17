@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero">
+  <h2 class="hero-title">Pure Caffeination</h2>
+  <p class="hero-subtitle">100mg pure caffeine capsules (240 count). No fillers. No sugar. Just clean energy.</p>
+  <img src="/static/img/pure_caffeination_product_logo.jpg" alt="Pure Caffeination Bottle">
+</div>
+
+<div class="features">
+  <div class="feature-box bordered">
+    <h3>Cost-Effective Energy</h3>
+    <p>Just $0.04 per serving vs $3.50 energy drinks or coffee. Save up to 98.86% on caffeine.</p>
+  </div>
+  <div class="feature-box bordered">
+    <h3>Clean Ingredients</h3>
+    <p>Zero calories, zero sugar, zero crash. Just pure, clean energy.</p>
+  </div>
+</div>
+
+<div style="text-align:center; margin-top: 2rem;">
+  <form action="/checkout/" method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn-primary">Buy Now - $4.99</button>
+  </form>
+</div>
+{% endblock %}
+
+{% extends "base.html" %}
+
+{% block content %}
+<h2>{{ product.name }}</h2>
+<p>{{ product.description }}</p>
+<p><strong>${{ product.price_cents|floatformat:-2 }}</strong></p>
+<a href="{% url 'add_to_cart' product.id %}" class="btn-primary">Buy Now</a>
+{% endblock %}

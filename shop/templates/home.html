@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero">
+  <h2 class="hero-title">Clean Energy. No Fillers.</h2>
+  <p class="hero-subtitle">
+    Pure Caffeination offers 100mg caffeine capsules with zero sugar, no calories, and 98% cost savings compared to energy drinks or coffee.
+  </p>
+  
+    <img src='/static/img/pure_caffeination_product_logo.jpg'>
+  <a href="{% url 'add_to_cart' 'prod_Sh27P4vea1pmff' %}" class="btn-primary">Shop Now</a>
+</div>
+
+<div class="features">
+  <div class="feature-box bordered">
+    <h3>Save 98.86% on Caffeine</h3>
+    <p>Two Pure Caffeination capsules = $0.04<br/>One energy drink or coffee = $3.50</p>
+  </div>
+  <div class="feature-box bordered">
+    <h3>No Sugar. No Crash.</h3>
+    <p>Just clean, pure caffeine. Perfect for focus, workouts, study, or late nights.</p>
+  </div>
+</div>
+
+<div class="testimonials">
+  <h3 class="testimonials-title">What People Are Saying</h3>
+  <blockquote>“Switched from coffee to Pure Caffeination. Same energy, way cheaper.” — Jamie</blockquote>
+  <blockquote>“No jitters, just focus. I’m hooked.” — Alex</blockquote>
+</div>
+{% endblock %}

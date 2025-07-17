@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Your Cart</h2>
+
+{% if cart %}
+  <div class="cart-product">
+    <img src="/static/img/pure_caffeination_product_logo.jpg" alt="{{ cart.name }}" class="cart-thumbnail">
+    <div class="cart-details">
+      <p><strong>Product:</strong> {{ cart.name }}</p>
+      <p>Pure caffeine capsules. Zero sugar. Clean energy.</p>
+      <p><strong>Unit Price:</strong> ${{ cart.price_cents|floatformat:-2 }}</p>
+    </div>
+  </div>
+
+
+
+  <label for="quantity">Quantity:</label>
+  <input type="number" name="quantity" id="quantity" value="{{ cart.quantity }}" min="1" required><br><br>
+
+  <label for="purchase_type">Purchase Type:</label>
+  <select name="purchase_type" id="purchase_type">
+    <option value="one-time" {% if cart.purchase_type == "one-time" %}selected{% endif %}>One-Time</option>
+    <option value="subscription" {% if cart.purchase_type == "subscription" %}selected{% endif %}>Subscribe & Save</option>
+  </select><br><br>
+
+  <label for="interval_months">Subscription Interval (months):</label>
+  <input type="number" name="interval_months" id="interval_months" value="{{ cart.interval_months }}" min="1" max="12"><br><br>
+
+ <p><strong>Estimated Total:</strong> $<span id="estimated_total">{{ estimated_total|floatformat:2 }}</span></p>
+
+  <!-- Only handles checkout -->
+  <form method="post" action="{% url 'checkout' %}">
+    {% csrf_token %}
+    <button type="submit" class="btn-primary">Proceed to Checkout</button>
+  </form>
+  <script>
+    const csrfToken = "{{ csrf_token }}";
+
+    function updateCart() {
+      const quantity = document.getElementById('quantity').value;
+      const purchaseType = document.getElementById('purchase_type').value;
+      const intervalMonths = document.getElementById('interval_months').value;
+
+      fetch("{% url 'update_cart' %}", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken,
+        },
+        body: JSON.stringify({
+          quantity,
+          purchase_type: purchaseType,
+          interval_months: intervalMonths
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('estimated_total').innerText = data.estimated_total.toFixed(2);
+      })
+      .catch(error => console.error("Error updating cart:", error));
+    }
+
+    document.getElementById('quantity').addEventListener('change', updateCart);
+    document.getElementById('purchase_type').addEventListener('change', updateCart);
+    document.getElementById('interval_months').addEventListener('change', updateCart);
+  </script>
+
+  <script>
+    const priceCents = parseInt("{{ product.price_cents|default:0|escapejs }}");
+    const quantityInput = document.getElementById('quantity');
+    const intervalInput = document.getElementById('interval_months');
+    const purchaseTypeSelect = document.getElementById('purchase_type');
+    const totalDisplay = document.getElementById('estimated_total');
+
+    function updateEstimatedTotal() {
+      let quantity = parseInt(quantityInput.value) || 1;
+      let total = (priceCents * quantity) / 100;
+      totalDisplay.textContent = `$${total.toFixed(2)}`;
+    }
+
+    quantityInput.addEventListener('input', updateEstimatedTotal);
+    purchaseTypeSelect.addEventListener('change', updateEstimatedTotal);
+    if (intervalInput) {
+      intervalInput.addEventListener('input', updateEstimatedTotal);
+    }
+  </script>
+
+{% else %}
+  <p>Your cart is empty.</p>
+{% endif %}
+{% endblock %}

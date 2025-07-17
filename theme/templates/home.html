@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% load static tailwind_tags %}
+<div class="text-center">
+    <h2 class="text-4xl font-bold mb-6">Clean Energy. No Fillers.</h2>
+    <p class="mb-8 text-lg max-w-xl mx-auto">Pure Caffeination offers 100mg caffeine capsules with zero sugar, no calories, and 98% cost savings compared to energy drinks or coffee.</p>
+    <a href="/shop" class="bg-{{ theme }}-secondary text-{{ theme }}-bg px-6 py-3 rounded-md font-bold text-lg hover:opacity-90 transition">Shop Now</a>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
+    <div class="p-6 rounded-xl bg-{{ theme }}-secondary text-{{ theme }}-bg">
+        <h3 class="text-2xl font-semibold mb-2">Save 98.86% on Caffeine</h3>
+        <p>Two Pure Caffeination capsules = $0.04<br/>One energy drink or coffee = $3.50</p>
+    </div>
+    <div class="p-6 rounded-xl border border-{{ theme }}-accent">
+        <h3 class="text-2xl font-semibold mb-2">No Sugar. No Crash.</h3>
+        <p>Just clean, pure caffeine. Perfect for focus, workouts, study, or late nights.</p>
+    </div>
+</div>
+
+<div class="mt-16">
+    <h3 class="text-2xl font-bold text-center mb-6">What People Are Saying</h3>
+    <div class="space-y-4 max-w-2xl mx-auto">
+        <blockquote class="bg-{{ theme }}-accent text-{{ theme }}-bg p-4 rounded-md italic">“Switched from coffee to Pure Caffeination. Same energy, way cheaper.” — Jamie</blockquote>
+        <blockquote class="bg-{{ theme }}-accent text-{{ theme }}-bg p-4 rounded-md italic">“No jitters, just focus. I’m hooked.” — Alex</blockquote>
+    </div>
+</div>
+{% endblock %}
