@@ -164,16 +164,49 @@ def stripe_webhook(request):
         return HttpResponse(status=400)
     except stripe.error.SignatureVerificationError as e:
         return HttpResponse(status=400)
-
+    
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
+        session_id = session.get('id')
+
+        # Optional: Retrieve full session with expanded line items
+        try:
+            line_items = stripe.checkout.Session.list_line_items(session_id, limit=10)
+        except Exception as e:
+            return HttpResponse(f"Error retrieving line items: {str(e)}", status=400)
+
+        quantity = 1
+        if line_items and line_items.data:
+            line_item = line_items.data[0]  # Assume single product purchase
+            stripe_product_id = line_item['price']['product']
+            quantity = line_item.get('quantity', 1)
+        try:
+            product = Product.objects.get(stripe_product_id=stripe_product_id)
+        except Product.DoesNotExist:
+            product = None  # Or handle gracefully
+        shipping_details = session.get('collected_information', {}).get('shipping_details', {})
 
         Order.objects.create(
-            email=session['customer_details']['email'],
-            name=session['shipping']['name'],
-            address=session['shipping']['address'],
-            amount_paid=session['amount_total'] / 100,
-            stripe_session_id=session['id'],
+            email=session.get('customer_details', {}).get('email'),
+            name=shipping_details.get('name', 'No Name'),
+            address=shipping_details.get('address', {}),
+            amount_paid=session.get('amount_total', 0) / 100,
+            stripe_session_id=session_id,
+            quantity=quantity,
+            product=product,
         )
 
     return HttpResponse(status=200)
+
+    # if event['type'] == 'checkout.session.completed':
+    #     session = event['data']['object']
+
+    #     Order.objects.create(
+    #         email=session['customer_details']['email'],
+    #         name=session['shipping']['name'],
+    #         address=session['shipping']['address'],
+    #         amount_paid=session['amount_total'] / 100,
+    #         stripe_session_id=session['id'],
+    #     )
+
+    # return HttpResponse(status=200)

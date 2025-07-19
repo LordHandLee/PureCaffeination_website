@@ -23,7 +23,7 @@ class Order(models.Model):
 
     quantity = models.IntegerField(default=1)
     interval_months = models.IntegerField(default=1)  # For subscriptions
-    created_at = models.DateTimeField(auto_now_add=True)
+    product = models.ForeignKey('Product', on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return f"{self.email} - ${self.amount_paid} ({self.quantity} bottles every {self.interval_months} months)"
