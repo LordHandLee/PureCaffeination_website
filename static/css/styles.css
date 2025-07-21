@@ -103,17 +103,16 @@ body {
   font-size: 1.125rem;
 }
 
-.hero-content {
+.hero-images {
   display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  text-align: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
-.hero-content img {
-  max-width: 100%;
+.hero-img {
+  width: 100%;
   height: auto;
   display: block;
 }
