@@ -103,6 +103,20 @@ body {
   font-size: 1.125rem;
 }
 
+.hero-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.hero-content img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
 .btn-primary {
   background-color: var(--secondary);
   color: var(--bg);
