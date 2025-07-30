@@ -9,8 +9,7 @@
     <div class="cart-details">
       <p><strong>Product:</strong> {{ cart.name }}</p>
       <p>Pure caffeine capsules. Zero sugar. Clean energy.</p>
-      <p><strong>Unit Price:</strong> ${{ cart.price_cents|floatformat:-2 }}</p>
-      <p><strong>Unit Price:</strong> ${{ cart.price_cents }}</p>
+      <p><strong>Unit Price:</strong> ${{ cart.price_cents|floatformat:2 }}</p>
     </div>
   </div>
 
