@@ -8,6 +8,10 @@ class Product(models.Model):
     stripe_product_id = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    @property
+    def price_dollars(self):
+        return self.price_cents / 100.0
+
     def __str__(self):
         return f"{self.name} - ${self.price_cents / 100:.2f}"
     
