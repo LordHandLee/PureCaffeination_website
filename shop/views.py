@@ -124,6 +124,7 @@ def add_to_cart(request, product_id):
     request.session['cart'] = {
         'product_id': product.id,
         'name': product.name,
+        'price_cents': product.price_cents,
         'quantity': 1,
         'purchase_type': 'one-time',  # default
     }
