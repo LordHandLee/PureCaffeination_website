@@ -125,6 +125,7 @@ def add_to_cart(request, product_id):
         'product_id': product.id,
         'name': product.name,
         'price_cents': product.price_cents,
+        'price_cart': product.price_dollars,
         'quantity': 1,
         'purchase_type': 'one-time',  # default
     }
