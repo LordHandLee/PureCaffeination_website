@@ -22,29 +22,69 @@ def product(request):
     }
     return render(request, 'product.html', {'theme': 'brand'})#, {'product': product_info})
 
+# def cart(request):
+#     # return render(request, 'cart.html', {'theme': 'brand'})
+#     cart = request.session.get('cart')
+#     if not cart:
+#         return HttpResponse("Your cart is empty.")
+
+
+#     try:
+#         product = get_object_or_404(Product, pk=cart['product_id'])
+#         quantity = int(cart.get('quantity', 1))
+#         price_cents = product.price_cents or 0
+#         estimated_total = (price_cents * quantity) / 100
+#     except Exception as e:
+#         return HttpResponse(f"Error loading cart: {str(e)}", status=500)
+
+#     return render(request, 'cart.html', {
+#         'theme': 'brand',
+#         'cart': cart,
+#         'product': product,
+#         'estimated_total': estimated_total
+#     })
+
+#     #return render(request, 'cart.html', {'theme': 'brand'})#{'cart': cart})
+
 def cart(request):
-    # return render(request, 'cart.html', {'theme': 'brand'})
     cart = request.session.get('cart')
     if not cart:
         return HttpResponse("Your cart is empty.")
 
+    if request.method == 'POST':
+        cart['quantity'] = int(request.POST.get('quantity', 1))
+        cart['purchase_type'] = request.POST.get('purchase_type', 'one-time')
+        cart['interval_months'] = int(request.POST.get('interval_months', 1)) if cart['purchase_type'] == 'subscription' else None
+        request.session['cart'] = cart
 
     try:
         product = get_object_or_404(Product, pk=cart['product_id'])
         quantity = int(cart.get('quantity', 1))
-        price_cents = product.price_cents or 0
-        estimated_total = (price_cents * quantity) / 100
+        base_price = product.price_cents
+
+        # Discount logic
+        discount_percent = 0
+        if cart.get('purchase_type') == 'subscription':
+            discount_percent += 10
+        if quantity >= 2:
+            discount_percent += 10
+
+        discounted_price_cents = base_price * (1 - discount_percent / 100)
+        estimated_total = (discounted_price_cents * quantity) / 100
+
+        return render(request, 'cart.html', {
+            'theme': 'brand',
+            'cart': {
+                **cart,
+                'price_dollars': f"{discounted_price_cents / 100:.2f}"
+            },
+            'product': product,
+            'estimated_total': estimated_total,
+            'price_cents_discounted': int(discounted_price_cents)
+        })
     except Exception as e:
         return HttpResponse(f"Error loading cart: {str(e)}", status=500)
-
-    return render(request, 'cart.html', {
-        'theme': 'brand',
-        'cart': cart,
-        'product': product,
-        'estimated_total': estimated_total
-    })
-
-    #return render(request, 'cart.html', {'theme': 'brand'})#{'cart': cart})
+    
 @csrf_exempt
 def update_cart(request):
     if request.method == 'POST':
@@ -84,6 +124,22 @@ def checkout(request):
         purchase_type = cart.get('purchase_type', 'one-time')
         interval_months = int(cart.get('interval_months') or 1)
 
+        # Determine which coupon(s) to apply
+        promotion_codes = []
+        if quantity >= 2 and purchase_type == 'subscription':
+            promotion_codes = ['volume discount', 'subscription discount']  # or just ['20OFFCOMBO']
+        elif quantity >= 2:
+            promotion_codes = ['volume discount once']
+        elif purchase_type == 'subscription':
+            promotion_codes = ['subscription discount']
+
+        # Get the stripe promotion code IDs
+        stripe_promotions = []
+        for code in promotion_codes:
+            promo = stripe.PromotionCode.list(code=code, active=True).data
+            if promo:
+                stripe_promotions.append(promo[0].id)
+
         if purchase_type == 'subscription':
             price_obj = StripePrice.objects.filter(
                 product=product,
@@ -111,6 +167,7 @@ def checkout(request):
             billing_address_collection='required',
             shipping_address_collection={"allowed_countries": ["US", "CA"]},
             mode=mode,
+            discounts=[{'promotion_code': pcode} for pcode in stripe_promotions],
             success_url=request.build_absolute_uri('/success/'),
             cancel_url=request.build_absolute_uri('/cart/'),
         )

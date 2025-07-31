@@ -6,7 +6,7 @@ from .models import Product, StripePrice
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
-SUBSCRIPTION_INTERVALS = [1, 2, 3, 4, 6]
+SUBSCRIPTION_INTERVALS = [1, 2, 3, 4, 5, 6]
 
 @receiver(post_save, sender=Product)
 def create_stripe_data_for_product(sender, instance, created, **kwargs):
