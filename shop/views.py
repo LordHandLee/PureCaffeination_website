@@ -104,13 +104,34 @@ def update_cart(request):
             request.session['cart'] = cart
 
             product = get_object_or_404(Product, pk=cart['product_id'])
-            price_cents = product.price_cents or 0
-            estimated_total = (price_cents * quantity) / 100
+            base_price = product.price_cents or 0
 
-            return JsonResponse({'estimated_total': estimated_total})
+            # Discount logic
+            discount_percent = 0
+            if purchase_type == 'subscription':
+                discount_percent += 10
+            if quantity >= 2:
+                discount_percent += 10
+
+            discounted_price = base_price * (1 - discount_percent / 100)
+            estimated_total = (discounted_price * quantity) / 100
+
+            return JsonResponse({
+                'estimated_total': estimated_total,
+                'discount_percent': discount_percent
+            })
+
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
+
     return JsonResponse({'error': 'Invalid request'}, status=405)
+    #         price_cents = product.price_cents or 0
+    #         estimated_total = (price_cents * quantity) / 100
+
+    #         return JsonResponse({'estimated_total': estimated_total})
+    #     except Exception as e:
+    #         return JsonResponse({'error': str(e)}, status=500)
+    # return JsonResponse({'error': 'Invalid request'}, status=405)
 
 def checkout(request):
     
