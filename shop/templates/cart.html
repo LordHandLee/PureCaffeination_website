@@ -67,7 +67,8 @@
   </script>
 
   <script>
-    const priceCents = parseInt("{{ product.price_cents|default:0|escapejs }}");
+    // const priceCents = parseInt("{{ product.price_cents|default:0|escapejs }}");
+    const priceCents = parseInt( "{{ price_cents_discounted|default:0|escapejs }}" );
     const quantityInput = document.getElementById('quantity');
     const intervalInput = document.getElementById('interval_months');
     const purchaseTypeSelect = document.getElementById('purchase_type');
