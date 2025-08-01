@@ -134,9 +134,9 @@ def update_cart(request):
     # return JsonResponse({'error': 'Invalid request'}, status=405)
 
 def checkout(request):
-    coupon_codes = {'volume discount': 'CbJNi7zb',
-                    'subscription discount': 'zb6vTTZ8',
-                    'volume discount once': 'tITWv3Cr',}
+    coupon_codes = {'volume discount': 'promo_1RrILF2ZdAyTmf1nljvz2d5v',
+                    'subscription discount': 'promo_1RrIJz2ZdAyTmf1nDegoIpzr',
+                    'volume discount once': 'promo_1RrILu2ZdAyTmf1npjoSUm4x',}
     
     cart = request.session.get('cart')
     if not cart:
