@@ -152,15 +152,19 @@ def checkout(request):
         promotion_codes = []
         if quantity >= 2 and purchase_type == 'subscription':
             promotion_codes = [coupon_codes['volume discount'], coupon_codes['subscription discount']]  # or just ['20OFFCOMBO']
+            print("Applying volume discount and subscription discount")
         elif quantity >= 2:
             promotion_codes = [coupon_codes['volume discount once']]
+            print("Applying volume discount once")
         elif purchase_type == 'subscription':
             promotion_codes = [coupon_codes['subscription discount']]
+            print("Applying subscription discount")
 
         # Get the stripe promotion code IDs
         stripe_promotions = []
         for code in promotion_codes:
             promo = stripe.PromotionCode.list(code=code, active=True).data
+            print("Promo code found:", promo)
             if promo:
                 stripe_promotions.append(promo[0].id)
 
