@@ -4,7 +4,12 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import stripe 
 import json
-from .models import Order, Product, StripePrice
+from .models import Order, Product, StripePrice, SEOPage
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework import serializers
+
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -286,6 +291,11 @@ def stripe_webhook(request):
 
     return HttpResponse(status=200)
 
+def seo_page_view(request, slug):
+    page = get_object_or_404(SEOPage, slug=slug)
+    return render(request, 'seo_page.html', {'page': page})
+
+
     # if event['type'] == 'checkout.session.completed':
     #     session = event['data']['object']
 
@@ -298,3 +308,15 @@ def stripe_webhook(request):
     #     )
 
     # return HttpResponse(status=200)
+class SEOPageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SEOPage
+        fields = '__all__'
+
+class SEOPageCreateView(APIView):
+    def post(self, request):
+        serializer = SEOPageSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

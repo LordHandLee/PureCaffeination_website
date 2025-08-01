@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sitemaps',
     'shop',
+    'rest_framework',
     #'tailwind',
     #'theme',  # this will be your Tailwind app
 ]

@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Product, Order, StripePrice
+from .models import Product, Order, StripePrice, SEOPage
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
@@ -20,3 +20,8 @@ class ProductAdmin(admin.ModelAdmin):
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     list_display = ('email', 'amount_paid', 'quantity', 'interval_months', 'created_at')
+
+@admin.register(SEOPage)
+class SEOPageAdmin(admin.ModelAdmin):
+    list_display = ('title', 'slug', 'created_at')
+    prepopulated_fields = {'slug': ('title',)}
