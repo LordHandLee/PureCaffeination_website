@@ -136,7 +136,8 @@ def update_cart(request):
 def checkout(request):
     coupon_codes = {'volume discount': 'volume',
                     'subscription discount': 'subscription',
-                    'volume discount once': 'volume1',}
+                    'volume discount once': 'volume1',
+                    'subscription_volume': 'subscriptionvolume',}
     
     cart = request.session.get('cart')
     if not cart:
@@ -151,7 +152,7 @@ def checkout(request):
         # Determine which coupon(s) to apply
         promotion_codes = []
         if quantity >= 2 and purchase_type == 'subscription':
-            promotion_codes = [coupon_codes['volume discount'], coupon_codes['subscription discount']]  # or just ['20OFFCOMBO']
+            promotion_codes = [coupon_codes['subscription_volume']]  # or just ['20OFFCOMBO']
             print("Applying volume discount and subscription discount")
         elif quantity >= 2:
             promotion_codes = [coupon_codes['volume discount once']]
