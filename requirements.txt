@@ -33,3 +33,4 @@ tzdata==2025.2
 urllib3==2.5.0
 whitenoise==6.9.0
 djangorestframework==3.16.0
+pillow==11.3.0
