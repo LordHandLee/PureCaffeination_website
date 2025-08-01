@@ -134,6 +134,9 @@ def update_cart(request):
     # return JsonResponse({'error': 'Invalid request'}, status=405)
 
 def checkout(request):
+    coupon_codes = {'volume discount': 'CbJNi7zb',
+                    'subscription discount': 'zb6vTTZ8',
+                    'volume discount once': 'tITWv3Cr',}
     
     cart = request.session.get('cart')
     if not cart:
@@ -148,11 +151,11 @@ def checkout(request):
         # Determine which coupon(s) to apply
         promotion_codes = []
         if quantity >= 2 and purchase_type == 'subscription':
-            promotion_codes = ['volume discount', 'subscription discount']  # or just ['20OFFCOMBO']
+            promotion_codes = [coupon_codes['volume discount'], coupon_codes['subscription discount']]  # or just ['20OFFCOMBO']
         elif quantity >= 2:
-            promotion_codes = ['volume discount once']
+            promotion_codes = [coupon_codes['volume discount once']]
         elif purchase_type == 'subscription':
-            promotion_codes = ['subscription discount']
+            promotion_codes = [coupon_codes['subscription discount']]
 
         # Get the stripe promotion code IDs
         stripe_promotions = []
